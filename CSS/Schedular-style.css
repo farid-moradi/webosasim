@@ -1,0 +1,101 @@
+h3{
+    color: red;
+}
+body{
+    background-color: gainsboro;
+    padding-top: 30px;
+}
+#mainWindow{
+    width: 900px;
+    height: 580px;
+    margin-left: 60px;
+    background-color: white;
+    position: absolute;
+    display:block;
+    overflow:auto;
+}
+.side{
+    background-color: white;
+    width: 250px;
+    height: 580px;
+    right: 60px;
+    position: absolute;
+    direction: rtl;
+}
+#Form{
+    margin-top: 20px;
+    margin-right: 40px;
+    margin-bottom: 0px;
+}
+#algorithms{
+
+}
+#go{
+    margin-top: 0px;
+}
+.reset-button{
+         width: 50px;
+         height: 25px;
+         border: 1px solid black;
+         background-color: steelblue;
+         cursor: pointer;
+         text-align: center;
+         position: relative;
+         margin-top: 10px;
+         font-family: "B Nazanin+ Regular"
+     }
+#showP{
+    width: 200px;
+    margin: auto;
+    margin-bottom: 30px;
+}
+.reset-button:hover{
+    background-color: lightblue;
+}
+.reset-button:active{
+    background-color: #ccc;
+}
+.add-button{
+    width: 70px;
+    height: 25px;
+    border: 1px solid black;
+    background-color: steelblue;
+    cursor: pointer;
+    text-align: center;
+    position: absolute;
+    margin-top: -27px;
+    margin-left: 70px;
+    font-family: "B Nazanin+ Regular";
+}
+.add-button:hover{
+    background-color: lightblue;
+}
+.add-button:active{
+    background-color: #ccc;
+}
+.no-select{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+table{
+    border-collapse: collapse;
+}
+.table{
+    position: relative;
+    margin-top: 20px;
+}
+td, th{
+    border: 1px solid black;
+    background-color: lightblue;
+    width: 70px;
+    padding: 5px;
+    text-align: center;
+}
+th.header{
+    cursor: default;
+    background-color: steelblue;
+}
