@@ -78,28 +78,13 @@ function showCanvas(data) {
     var width = 800,
         barHeight = 25;
 
-
     var x = d3.scale.linear()
         .domain([0, data[data.length - 1][2]])
         .range([0, width]);
 
-
-
     var chart = d3.select(".chart")
         .attr("width", width)
         .attr("height", barHeight * data.length);
-
-
-
-    /*    var bar2 = chart.selectAll("g")
-     .data(data)
-     .enter().append("g")
-     .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
-
-     bar2.append("rect")
-     .attr("width", 800)
-     .attr("height", barHeight - 1)
-     .attr('fill','lightblue');*/
 
     var test = [];
     var bar = chart.selectAll("g")
