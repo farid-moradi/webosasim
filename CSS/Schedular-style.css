@@ -20,15 +20,17 @@ body{
     height: 580px;
     right: 60px;
     position: absolute;
-    direction: rtl;
+
 }
 #Form{
     margin-top: 20px;
-    margin-right: 40px;
+    margin-left: 30px;
     margin-bottom: 0px;
+    font-family: sans-serif;
 }
 #algorithms{
-
+margin-left: 10px;
+    font-family: sans-serif;
 }
 #go{
     margin-top: 0px;

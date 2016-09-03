@@ -136,7 +136,7 @@ function resourceRequest() {
                 }
                 if(safetyExam(need,available,allocation)) {
                     var parag = document.getElementById('explanation');
-                    parag.innerHTML = "This State Is Save..." + '<br>' + parag.innerText;
+                    parag.innerHTML = "This State Is Safe..." + '<br>' + parag.innerText;
                 }
                 d3.select('#Available .table')
                     .selectAll('.row')
