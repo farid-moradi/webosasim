@@ -44,59 +44,59 @@ function sortNumber(a,b) {
 function createList() {
     var pr = document.getElementById('process');
     var trs = pr.getElementsByTagName('tr');
-    var td ;
+    var td;
     var temp = [];
     var temp2 = [];
-    for(var i = 1;i<6;i++)
-    {
+    for (var i = 1; i < 6; i++) {
         temp2 = [];
-        for(var j=0;j<3;j++)
-        {
+        for (var j = 0; j < 3; j++) {
             temp2.push(trs[i].getElementsByTagName('td')[j].textContent);
         }
         temp.push(temp2);
     }
-    for(var item in temp){
+    for (var item in temp) {
         processes[temp[item][0]] = {};
-        processes[temp[item][0]].name  = temp[item][0];
+        processes[temp[item][0]].name = temp[item][0];
         processes[temp[item][0]].startPoint = parseInt(temp[item][1]);
         processes[temp[item][0]].memNeed = parseInt(temp[item][2]);
     }
-    //main contain the processes that exist in main memory
-
+    //main, contain the processes that exist in main memory
     var main = temp.filter(function (d) {
-       return d[1]!= -1;
+        return d[1] != -1;
     });
+
     //make list...
-    var units = parseInt(memorySize/memUnit);
+    var units = parseInt(memorySize / memUnit);
     var maintemp = [];
-    maintemp = main.sort(function (a,b) {
-        return a[1]-b[1];
-    });
-    var lastEnd = 0;
-    for(var item in maintemp){
-        if(item == 0){
-            if(maintemp[0][1] == 0){
-                list.push(addNode('P',0,maintemp[0][2]));
-            }
-            else{
-                list.push(addNode('H',0,maintemp[0][1]));
-                list.push(addNode('P',maintemp[0][1],parseInt(maintemp[0][2])));
-            }
-            lastEnd = parseInt(maintemp[0][2]) + parseInt(maintemp[0][1]);
-        }
-        else{
-            if(maintemp[item][1] == lastEnd){
-                list.push(addNode('P',maintemp[item][1],parseInt(maintemp[item][2])));
+    if (main.length != 0) {
+        maintemp = main.sort(function (a, b) {
+            return a[1] - b[1];
+        });
+        var lastEnd = 0;
+        for (var item in maintemp) {
+            if (item == 0) {
+                if (maintemp[0][1] == 0) {
+                    list.push(addNode('P', 0, maintemp[0][2]));
+                }
+                else {
+                    list.push(addNode('H', 0, maintemp[0][1]));
+                    list.push(addNode('P', maintemp[0][1], parseInt(maintemp[0][2])));
+                }
+                lastEnd = parseInt(maintemp[0][2]) + parseInt(maintemp[0][1]);
             }
             else {
-                list.push(addNode('H',lastEnd,(maintemp[item][1] - lastEnd)));
-                list.push(addNode('P',maintemp[item][1],parseInt(maintemp[item][2])));
+                if (maintemp[item][1] == lastEnd) {
+                    list.push(addNode('P', maintemp[item][1], parseInt(maintemp[item][2])));
+                }
+                else {
+                    list.push(addNode('H', lastEnd, (maintemp[item][1] - lastEnd)));
+                    list.push(addNode('P', maintemp[item][1], parseInt(maintemp[item][2])));
+                }
+                lastEnd = parseInt(maintemp[item][2]) + parseInt(maintemp[item][1]);
             }
-            lastEnd = parseInt(maintemp[item][2]) + parseInt(maintemp[item][1]);
-        }
-        if(item == maintemp.length-1 && lastEnd < units){
-            list.push(addNode('H',lastEnd,units - lastEnd));
+            if (item == maintemp.length - 1 && lastEnd < units) {
+                list.push(addNode('H', lastEnd, units - lastEnd));
+            }
         }
     }
 }

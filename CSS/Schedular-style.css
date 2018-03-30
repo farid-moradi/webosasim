@@ -6,9 +6,9 @@ body{
     padding-top: 30px;
 }
 #mainWindow{
-    width: 900px;
+    width: 66%;
     height: 580px;
-    margin-left: 60px;
+    margin-left: 5%;
     background-color: white;
     position: absolute;
     display:block;
@@ -16,10 +16,10 @@ body{
 }
 .side{
     background-color: white;
-    width: 250px;
+    width: 20%;
     height: 580px;
-    right: 60px;
-    position: absolute;
+    float: right;
+    margin-right: 5%;
 
 }
 #Form{
@@ -65,8 +65,8 @@ margin-left: 10px;
     cursor: pointer;
     text-align: center;
     position: absolute;
-    margin-top: -27px;
-    margin-left: 70px;
+    margin-top: 5px;
+    margin-left: 0px;
     font-family: "B Nazanin+ Regular";
 }
 .add-button:hover{

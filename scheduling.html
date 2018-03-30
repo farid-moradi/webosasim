@@ -8,7 +8,7 @@
       body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:15px; }
 
         .chart text {
-            fill: white;
+            fill: lightblue;
             font: 10px sans-serif;
             text-anchor: end;
         }
@@ -17,7 +17,7 @@
             border: solid steelblue 1px;
             padding: 10px 10px 10px 10px;
             background-color: lightblue;
-
+            margin-top: 40px;
         }
     </style>
 
@@ -28,15 +28,12 @@
 <div id="mainWindow">
     <div id="showP">
     <div class="table"></div>
-    <div class="reset-button">save</div>
     <div class="add-button">new process</div>
     </div>
     <svg class="chart"></svg>
 </div>
 <div class="side">
     <form id="Form">
-<!--        <button type="button" id="showProcess">نمایش پروسه ها</button><br>
-        &lt;!&ndash;<button id="showProcess">نمایش پروسه ها</button><br>&ndash;&gt;-->
         <p>Algorithm :
         <select id="algorithms">
             <option name="fcfs" value="fcfs">FCFS</option>
@@ -44,7 +41,6 @@
             <option name="srt" value="srt">SRT</option>
             <option name="hrrn" value="hrrn">HRRN</option>
             <option name="rr" value="rr">RR</option>
-            <option name="test" value="test">test</option>
         </select>
         </p>
         <br>

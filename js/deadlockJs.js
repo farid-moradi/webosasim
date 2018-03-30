@@ -16,7 +16,7 @@ function isItemInArray(array, item3) {
         }
     }
 }
-function optionM1() {
+function executeDeadLock() {
     var allocationTemp = [];
     var maxTemp = [];
     for(var item in allocationTemp)
@@ -31,8 +31,6 @@ function optionM1() {
     x1[0].style.visibility = "visible";
     var x1 = document.getElementsByClassName("addResource-button");
     x1[0].style.visibility = "visible";
-    /*var x1 = document.getElementsByClassName("save-button");
-    x1[0].style.visibility = "visible";*/
     var x1 = document.getElementsByClassName("graphshow-button");
     x1[0].style.visibility = "visible";
     var x1 = document.getElementsByClassName("banker-button");
@@ -57,38 +55,44 @@ function optionM1() {
     showTableExisting(text,text2);
     //Banker Algorithm and event handler...
     var bankerB = document.getElementsByClassName('banker-button')[0];
+    var x = document.getElementById('algorithms');
     bankerB.onclick = function () {
-        var bbut = document.getElementsByClassName('banker-button');
-        bbut[0].style.pointerEvents = 'none';
-        bbut[0].style.opacity = '0.4';
-        var first = document.getElementById('firstInfo');
-        var lin = document.createElement('hr');
-        lin.style.marginTop = '14px';
-        lin.style.backgroundColor = 'white';
-        lin.style.color = 'white';
-        insertAfter(lin, first);
-        var sec = document.getElementById("secondInfo");
-        var y = sec.getElementsByTagName('p');
-        for (var i = 0; i < 3; i++) {
-            y[i].style.visibility = 'visible';
+        var selected = x.options[x.selectedIndex].value;
+        if(selected == 'banker') {
+            var bbut = document.getElementsByClassName('banker-button');
+            bbut[0].style.pointerEvents = 'none';
+            bbut[0].style.opacity = '0.4';
+            var first = document.getElementById('firstInfo');
+            var lin = document.createElement('hr');
+            lin.style.marginTop = '14px';
+            lin.style.backgroundColor = 'white';
+            lin.style.color = 'white';
+            insertAfter(lin, first);
+            var sec = document.getElementById("secondInfo");
+            var y = sec.getElementsByTagName('p');
+            for (var i = 0; i < 3; i++) {
+                y[i].style.visibility = 'visible';
+            }
+
+            text = '#Need .table';
+            text2 = 'Need';
+            showTableNeed(text, text2);
+
+            text = '#Possessed .table';
+            text2 = 'Possessed';
+            showTablePossessed(text, text2);
+
+            text = '#Available .table';
+            text2 = 'Available';
+            showTableAvailable(text, text2);
+
+            //main Banker Algorithm...
+            if(safetyExam(need, available, allocation)){
+            resourceRequest();}
         }
+        else if(selected == 'hafman')
+            optionM2();
 
-        text = '#Need .table';
-        text2 = 'Need';
-        showTableNeed(text,text2);
-
-        text='#Possessed .table';
-        text2 = 'Possessed';
-        showTablePossessed(text,text2);
-
-        text='#Available .table';
-        text2 = 'Available';
-        showTableAvailable(text,text2);
-
-        //main Banker Algorithm...
-        safetyExam(need,available,allocation);
-
-        resourceRequest();
     }
 }
 //Resource Request Algorithm
@@ -102,12 +106,15 @@ function resourceRequest() {
     mw.scrollTop = mw.scrollHeight;
     document.getElementsByClassName('request-button')[0].onclick = function () {
         this.style.visibility = 'hidden';
+
         //Step1 : check to see : Request[i] <= Need[i]
         var pr = request[0][0];
         var flag = true;
-        for(var i = 1;i<= resources.length+1;i++)
-            if(request[pr][i] > need[pr][i])
+        for(var i = 1;i<= resources.length+1;i++){
+            if(request[0][i] > need[pr][i]){
                 flag = false;
+            }
+        }
         if (!flag) {
             alert("Requesting Process Fault...");
             return;
@@ -124,49 +131,84 @@ function resourceRequest() {
             if (!flag){
                 alert("Request Suspended...There Are Not Enough Resource.");
             }
+
             //When Request Accepted...
             else {
                 pr = request[0][0];
-
+                var parag = document.getElementById('explanation');
                 for(var i=0;i<resources.length;i++)
                 {
-                    allocation[pr][i] += request[pr][i+1];//allocation['p2'] = [1,0,0,0] and request['p2'] = ['p2',2,1,0,0] #example
-                    need[pr][i+1] = need[pr][i+1] - request[pr][i+1];//need ['p2'] = ['p2',1,1,1,1] #example
-                    available[0][i] -= request[pr][i+1];//available = [1,0,2,0]
+                    allocation[pr][i] += request[0][i+1];//allocation['p2'] = [1,0,0,0] and request['p2'] = ['p2',2,1,0,0] #example
+                    need[pr][i+1] = need[pr][i+1] - request[0][i+1];//need ['p2'] = ['p2',1,1,1,1] #example
+                    available[0][i] -= request[0][i+1];//available = [1,0,2,0]
                 }
                 if(safetyExam(need,available,allocation)) {
-                    var parag = document.getElementById('explanation');
                     parag.innerHTML = "This State Is Safe..." + '<br>' + parag.innerText;
+
+                    d3.select('#Available .table')
+                        .selectAll('.row')
+                        .selectAll('.cell')
+                        .datum(available[0])
+                        .text(function (d, i) {
+                            if (parseInt(this.textContent) - d[i] == 0)
+                                return this.textContent;
+                            else {
+                                this.style.color = 'red';
+                                return d[i];
+                            }
+                        });
+                    var neTemp = [];
+                    for (var item in need) {
+                        neTemp.push(need[item])
+                    }
+                    d3.select('#Need .table')
+                        .selectAll('.row')
+                        .selectAll('.cell')
+                        .datum(neTemp)
+                        .text(function (d, j, i) {
+                            if (this.textContent - d[i][j] == 0 || j == 0)
+                                return this.textContent;
+                            else {
+                                this.style.color = 'red';
+                                return d[i][j];
+                            }
+                        })
                 }
-                d3.select('#Available .table')
-                    .selectAll('.row')
-                    .selectAll('.cell')
-                    .datum(available[0])
-                    .text(function (d,i) {
-                        if(parseInt(this.textContent)-d[i] ==0)
-                            return this.textContent;
-                        else {
-                            this.style.color = 'red';
-                            return d[i];
-                        }
-                    });
-                var neTemp = [];
-                for(var item in need)
-                {
-                    neTemp.push(need[item])
+                else{
+                    parag.innerHTML = "This State Is Not Safe...";
+                    parag.style.color = 'red';
+                    parag.style.marginLeft ='340px';
+
+
+                    d3.select('#Available .table')
+                        .selectAll('.row')
+                        .selectAll('.cell')
+                        .datum(available[0])
+                        .text(function (d, i) {
+                            if (parseInt(this.textContent) - d[i] == 0)
+                                return this.textContent;
+                            else {
+                                this.style.color = 'red';
+                                return d[i];
+                            }
+                        });
+                    var neTemp = [];
+                    for (var item in need) {
+                        neTemp.push(need[item])
+                    }
+                    d3.select('#Need .table')
+                        .selectAll('.row')
+                        .selectAll('.cell')
+                        .datum(neTemp)
+                        .text(function (d, j, i) {
+                            if (this.textContent - d[i][j] == 0 || j == 0)
+                                return this.textContent;
+                            else {
+                                this.style.color = 'red';
+                                return d[i][j];
+                            }
+                        })
                 }
-                d3.select('#Need .table')
-                    .selectAll('.row')
-                    .selectAll('.cell')
-                    .datum(neTemp)
-                    .text(function (d, j, i) {
-                        if(this.textContent-d[i][j] == 0 || j==0)
-                            return this.textContent;
-                        else {
-                            this.style.color = 'red';
-                            return d[i][j];
-                        }
-                    })
             }
         }
     };
@@ -178,13 +220,13 @@ function safetyExam(need, available, allocation) {
     var lessThanA = [];
     var flag;
     var needTemp = [];
-    var a = [];
     a = available[0].slice();
 
     var leftProcess = proccesses.slice();
     for(var j=0;j<proccesses.length;j++) {
         needTemp = [];
         lessThanA = [];
+
         //step1
         for (var item in leftProcess) {
             flag = true;
@@ -198,34 +240,48 @@ function safetyExam(need, available, allocation) {
                 lessThanA.push(need[leftProcess[item]][0]);
             }
         }
+
         //step2
-        markProcess.push(lessThanA[0]);
-        var index = leftProcess.indexOf(lessThanA[0]);
-        leftProcess.splice(index, 1);
-        for (var i = 0; i < resources.length; i++) {
-            a[i] += parseInt(allocation[lessThanA[0]][i]);
+        if(lessThanA.length != 0) {
+            markProcess.push(lessThanA[0]);
+            var index = leftProcess.indexOf(lessThanA[0]);
+            leftProcess.splice(index, 1);
+            for (var i = 0; i < resources.length; i++) {
+                a[i] += parseInt(allocation[lessThanA[0]][i]);
+            }
         }
     }
-    if(!(document.getElementById('explanation'))) {
-        var parag = document.createElement('p');
-        parag.innerHTML += "One Of The Safe Path Is : " + markProcess;
-        parag.style.marginLeft = '300px';
-        parag.style.marginTop = '0px';
-        parag.style.marginBottom = '50px';
-        parag.style.color = "blue";
-        parag.style.fontSize = '20px';
-        parag.id = 'explanation';
-        var secend2 = document.getElementById("secondInfo");
-        insertAfter(parag, secend2);
-    }
+
     var mw = document.getElementById("mainWindow");
     mw.scrollTop = mw.scrollHeight;
+    var secend2 = document.getElementById("secondInfo");
+    var parag = document.createElement('p');
+    var parag1 = document.createElement('p');
     if(leftProcess.length == 0) {
-       // alert("Safe State...");
+        if(!(document.getElementById('explanation'))) {
+            parag.innerHTML = "One Of The Safe Path Is : " + markProcess;
+            parag.style.marginLeft = '300px';
+            parag.style.marginTop = '0px';
+            parag.style.marginBottom = '50px';
+            parag.style.color = "blue";
+            parag.style.fontSize = '20px';
+            parag.id = 'explanation';
+            insertAfter(parag, secend2);
+        }
         return 1;
     }
+
     else {
-        alert("Not A Safe State...");
+        var thirdInfo = document.getElementById("thirdInfo");
+        parag1.innerHTML = "There is no safe path";
+        parag1.style.marginLeft = '340px';
+        parag1.style.marginTop = '0px';
+        parag1.style.marginBottom = '50px';
+        parag1.style.color = "red";
+        parag1.style.fontSize = '20px';
+        parag1.id = 'explanation';
+        insertAfter(parag1, secend2);
+        thirdInfo.style.display = 'none';
         return 0;
     }
 }
@@ -235,15 +291,12 @@ function showTableMax(idTemp,arr) {
     for(var item in resources) {
         columnNames.push(resources[item]);
     }
-
     var tableMax = Table()
         .on('edit', function (d) {
             updateTableMax([d, columnNames]);
-            for(var item in d)
-            {
-                d[item].splice(0,1);
+            for(var i=0; i<proccesses.length; i++){
+                max[proccesses[i]] = d[i];
             }
-            max = d;
         });
     function updateTableMax(_data) {
         d3.select(idTemp)
@@ -269,22 +322,29 @@ function showTableMax(idTemp,arr) {
         }
     }
     updateTableMax([maxTemp, columnNames]);
-
 }
 function showTableAllocation(idTemp,arr) {
+    var allocationTemp = [];
+    var allocationTemp2 = [];
     var columnNames = ['Process'];
     for(var item in resources) {
         columnNames.push(resources[item]);
     }
-    var allocationTemp = [];
     var tableAllocation = Table()
         .on('edit', function (d) {
-            updateTableAllocation([d, columnNames]);
-            for(var item in d)
-            {
-                d[item].splice(0,1);
+            var y = document.getElementById(arr);
+            var x = y.getElementsByClassName('cell');
+            allocationTemp2 = [];
+            for(var i=0;i<proccesses.length;i++){
+                allocationTemp2[i]=[];
+                for(var j=0;j<(resources.length)+1;j++){
+                    allocationTemp2[i].push(x[(i*(resources.length + 1))+j].innerHTML);
+                }
             }
-            allocation = d;
+            for(var i=0; i<proccesses.length; i++){
+                allocation[proccesses[i]] = allocationTemp2[i];
+            }
+            updateTableAllocation([allocationTemp2, columnNames]);
         });
     function updateTableAllocation(_data) {
         d3.select(idTemp)
@@ -300,7 +360,6 @@ function showTableAllocation(idTemp,arr) {
             }
         }
     }
-
     for (var item in proccesses)
     {
         allocationTemp.push(allocation[proccesses[item]]);
@@ -323,7 +382,6 @@ function showTableRequest(idTemp) {
             var row = document.getElementById("Request");
             var m = row.getElementsByClassName('row');
             var k = m[0].getElementsByClassName('cell');
-            //alert(request[0]);
             for(var item in k)
             {
                 if(k[item].textContent != undefined) {
@@ -370,25 +428,10 @@ function showTableNeed(idTemp,arr) {
     for(var item in resources) {
         columnNames.push(resources[item]);
     }
-    var maxTemp = d3.selectAll('#Max .table tr')
-        .data();
-    for (var i = 1; i < maxTemp.length; i++) {
-        maxTemp[i].splice(0, 1);
-    }
-    maxTemp.splice(0, 1);
-
-    var allocTemp = d3.selectAll('#Allocation .table tr')
-        .data();
-    for (var i = 1; i < allocTemp.length; i++) {
-        allocTemp[i].splice(0, 1);
-    }
-    allocTemp.splice(0, 1);
-
-
     for (var i = 0; i < proccesses.length; i++) {
         var needTemp2 = [];
-        for (var j = 0; j < resources.length; j++) {
-            needTemp2[j] = maxTemp[i][j] - allocTemp[i][j];
+        for (var j = 1; j <= resources.length; j++) {
+            needTemp2[j-1] = max[proccesses[i]][j] - allocation[proccesses[i]][j];
         }
         need.push(needTemp2);
     }
@@ -396,12 +439,6 @@ function showTableNeed(idTemp,arr) {
     Need(need);
     var tableNeed = Table()
         .on('edit', function (d) {
-            updateTableNeed([d, columnNames]);
-            for(var item in d)
-            {
-                d[item].splice(0,1);
-            }
-            need = d;
         });
     function updateTableNeed(_data) {
         d3.select(idTemp)
@@ -428,11 +465,7 @@ function showTableNeed(idTemp,arr) {
             needTemp[item].unshift(proccesses[item]);
         }
     }
-
-
     updateTableNeed([needTemp, columnNames]);
-
-
 }
 function showTableAvailable(idTemp,arr) {
     var columnNamesExisting = [];
@@ -459,15 +492,6 @@ function showTableAvailable(idTemp,arr) {
     possessed.push(posTemp);
     var tableAvailable = Table()
         .on('edit', function (d) {
-            var row = document.getElementById(arr);
-            var m = row.getElementsByClassName('row');
-            var k = m[0].getElementsByClassName('cell');
-            for(var item in k)
-            {
-                if(k[item].textContent != undefined) {
-                    available[0][item] = k[item].textContent;
-                }
-            }
         });
     function updateTableAvailable(_data) {
         d3.select(idTemp)
@@ -485,7 +509,7 @@ function showTablePossessed(idTemp,arr) {
         sum = 0;
         for(var item in proccesses)
         {
-            sum += allocation[proccesses[item]][i];
+            sum += parseInt(allocation[proccesses[item]][i+1]);
         }
         posTemp[i] = sum;
     }
@@ -497,15 +521,7 @@ function showTablePossessed(idTemp,arr) {
     }
     var tablePossessed = Table()
         .on('edit', function (d) {
-            var row = document.getElementById(arr);
-            var m = row.getElementsByClassName('row');
-            var k = m[0].getElementsByClassName('cell');
-            for(var item in k)
-            {
-                if(k[item].textContent != undefined) {
-                    possessed[0][item] = k[item].textContent;
-                }
-            }
+
         });
     function updateTablePossessed(_data) {
         d3.select(idTemp)
@@ -518,7 +534,7 @@ function showTablePossessed(idTemp,arr) {
 }
 
 function optionM2() {
-    //alert("farid moradi");
+    alert("Not ready yet");
 
 }
 function insertAfter(newNode, referenceNode) {
@@ -548,7 +564,7 @@ var existing = [];
 var possessed = [];
 var available = [];
 var request = [];
-request = [['p2',0,0,1,0]];
+request = [['p5',1,0,0,0]];
 proccesses = ['p1','p2','p3','p4','p5'];
 resources = ['r1','r2','r3','r4'];
 var data = [[4,1,1,1],[0,2,1,2],[4,2,1,0],[1,1,1,1],[2,1,1,0]];
@@ -611,23 +627,6 @@ Max(data);
 Allocation(data2);
 Existing1([[6,3,4,2]]);
 
-function farid() {
-    var x = document.getElementById('algorithms');
-    var selected = x.options[x.selectedIndex].value;
-    if(selected == 'banker')
-        optionM1();
-    else if(selected == 'hafman')
-        optionM2();
-
-     d3.select('#banker')
-        .on('click',function () {
-                optionM1();
-    });
-    d3.select('#hafman')
-        .on('click',function () {
-            optionM2();
-        });
-}
 window.onload = function () {
-    farid();
+    executeDeadLock();
 };
